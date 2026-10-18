@@ -14,8 +14,10 @@ class Weapon(Item):
     def __init__(self,name: str,damage: int,weight: int = 20) -> None:
         super().__init__(name,weight)
         self.damage: int = damage
+
     def __repr__(self) -> str:
         return f'{super().__repr__()},({self.damage} урона)'
+
     def use(self,character: 'Hero') -> None:
         if character.is_equipped:
             character.inventory.append(character.is_equipped)
@@ -36,3 +38,4 @@ class Potion(Item):
         character.hp += self.effect
         print(f'Вы выпили зелье, ваше здоровье: {character.hp}')
         character.inventory.remove(self)
+#Сделать фабрику предметов как и с монстрами
