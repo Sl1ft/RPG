@@ -32,8 +32,8 @@ user1.check_inventory()
 user1.use_item(bottle_of_heal)
 
 while True:
-    if user1.hp <= 0:
-        print('Game over')
+    if not user1.is_alive:
+        print('Game over💀')
         break
     a = input().lower()
     if a == 'exit':

@@ -23,9 +23,12 @@ class Character(ABC):
             self.__hp = self.max_hp
         elif value <= 0:
             self.__hp = 0
-            print(f'{self.name} погиб!💀')
         else:
             self.__hp = value
+
+    @property
+    def is_alive(self) -> bool:
+        return self.hp > 0
     def attack(self,target: 'Character') -> None:
         min_dmg = int(self.damage * 0.8)
         max_dmg = int(self.damage * 1.2)
