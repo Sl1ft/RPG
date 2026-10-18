@@ -102,11 +102,14 @@ class Hero(Character):
 
                 try:
                     b = int(input())
-                    if b == 0:
-                        break
+                    if b in range(0,len(self.inventory)+1):
+                        if b == 0:
+                            break
+                        else:
+                            self.use_item(self.inventory[b - 1])
+                            break
                     else:
-                        self.use_item(self.inventory[b - 1])
-                        break
+                        print('❌Введите номер предмета из списка')
                 except (ValueError, IndexError):
                     print('❌Введите номер предмета из приведенного выше списка\n')
         else:

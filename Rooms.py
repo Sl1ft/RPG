@@ -30,28 +30,31 @@ def room(hero: 'Hero', monsters_list: list,items_list:list):
 
         try:
             user_input = int(input())
-            if current_events[choose[user_input-1]] == 'Монстр':
-                chosen_monstr = chance(monsters_list)
-                fight(hero,chosen_monstr)
-                break
-            elif current_events[choose[user_input-1]] == 'Сокровище':
-                chosen_item = chance(items_list)
-                hero.take_item(chosen_item)
-                break
-            elif current_events[choose[user_input-1]] == 'Неизвестность':
-                chosen_event = choices(['Монстр','Сокровище','Ловушка'], weights=[60,50,30], k=1)[0]
-                print(f'В комнате за слоем тумана, оказывается {chosen_event}')
-                if chosen_event == 'Монстр':
-                    fight(hero,chance(monsters_list))
+            if user_input in range(1,a+1):
+                if current_events[choose[user_input-1]] == 'Монстр':
+                    chosen_monstr = chance(monsters_list)
+                    fight(hero,chosen_monstr)
                     break
-                elif chosen_event == 'Сокровище':
-                    hero.take_item(chance(items_list))
+                elif current_events[choose[user_input-1]] == 'Сокровище':
+                    chosen_item = chance(items_list)
+                    hero.take_item(chosen_item)
                     break
-                elif chosen_event == 'Ловушка':
-                    trap_damage = randint(10,50)
-                    print(f'Вы попались в ловушку и вам нанесло {trap_damage} урона')
-                    hero.hp -= trap_damage
-                    break
+                elif current_events[choose[user_input-1]] == 'Неизвестность':
+                    chosen_event = choices(['Монстр','Сокровище','Ловушка'], weights=[60,50,30], k=1)[0]
+                    print(f'В комнате за слоем тумана, оказывается {chosen_event}')
+                    if chosen_event == 'Монстр':
+                        fight(hero,chance(monsters_list))
+                        break
+                    elif chosen_event == 'Сокровище':
+                        hero.take_item(chance(items_list))
+                        break
+                    elif chosen_event == 'Ловушка':
+                        trap_damage = randint(10,50)
+                        print(f'Вы попались в ловушку и вам нанесло {trap_damage} урона')
+                        hero.hp -= trap_damage
+                        break
+            else:
+                print('Введите вариант из списка')
         except(ValueError,IndexError):
             print('\nВведити вариант из выше перечисленных!\n')
 

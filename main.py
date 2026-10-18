@@ -1,6 +1,5 @@
 from Items import Weapon,Potion
-from Character import Hero,Monster
-from RPG.Character import Goblin, Skeleton, Orc
+from Character import Hero,Monster,Goblin,Skeleton,Orc
 from combat import fight
 from random import choice
 from Rooms import room
@@ -33,6 +32,9 @@ user1.check_inventory()
 user1.use_item(bottle_of_heal)
 
 while True:
+    if user1.hp <= 0:
+        print('Game over')
+        break
     a = input().lower()
     if a == 'exit':
         break
