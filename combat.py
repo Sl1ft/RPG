@@ -2,7 +2,7 @@ from random import choice,randint
 def fight(hero: 'Hero', MonsterClass: type('Monster') ) -> None:
     monster = MonsterClass()
     print(f'\n⚔️Начался бой, {hero.name} дерется с {monster.name}')
-    while hero.hp > 0 and monster.hp > 0:
+    while hero.is_alive > 0 and monster.is_alive > 0:
         print('\nВаш ход')
         while True:
             for i,decision in enumerate(('Атаковать','Использовать предмет','Попытаться сбежать'),start=1):
@@ -25,7 +25,7 @@ def fight(hero: 'Hero', MonsterClass: type('Monster') ) -> None:
             except (ValueError, IndexError, TypeError):
                 print('Выберите действие из приведенных выше')
 
-        if monster.hp <= 0:
+        if not monster.is_alive:
             print(f'Вы победили {monster.name}')
             if monster.loot:
                 print(f'🔎Вы нашли предмет ({monster.loot} добавлено в инвентарь)')
@@ -34,6 +34,3 @@ def fight(hero: 'Hero', MonsterClass: type('Monster') ) -> None:
 
             break
         monster.attack(hero)
-        if hero.hp <= 0:
-            print('Вы проиграли')
-            break
