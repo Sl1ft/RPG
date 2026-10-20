@@ -1,4 +1,4 @@
-from random import choice,randint
+from random import randint
 def fight(hero: 'Hero', MonsterClass: type('Monster') ) -> None:
     monster = MonsterClass()
     print(f'\n⚔️Начался бой, {hero.name} дерется с {monster.name}')
@@ -28,8 +28,8 @@ def fight(hero: 'Hero', MonsterClass: type('Monster') ) -> None:
         if not monster.is_alive:
             print(f'Вы победили {monster.name}')
             if monster.loot:
-                print(f'🔎Вы нашли предмет ({monster.loot} добавлено в инвентарь)')
-                hero.inventory.append(monster.loot)
+                print(f'🔎Вы нашли предмет ({monster.loot().name} добавлено в инвентарь)')
+                hero.take_item(monster.loot)
             hero.gain_exp(monster.exp_reward)
 
             break
