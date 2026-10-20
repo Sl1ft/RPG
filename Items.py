@@ -38,4 +38,24 @@ class Potion(Item):
         character.hp += self.effect
         print(f'Вы выпили зелье, ваше здоровье: {character.hp}')
         character.inventory.remove(self)
-#Сделать фабрику предметов как и с монстрами
+
+
+class HealPotion(Potion):
+    weight = 40
+    def __init__(self) -> None:
+        super().__init__("Малое зелье лечения",20)
+
+class Sword(Weapon):
+    weight = 20
+    def __init__(self) -> None:
+        super().__init__('Меч',20)
+
+class Bow(Weapon):
+    weight = 15
+    def __init__(self) -> None:
+        super().__init__('Лук',45)
+
+class Hammer(Weapon):
+    weight = 5
+    def __init__(self) -> None:
+        super().__init__('Молот',100)

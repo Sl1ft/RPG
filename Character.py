@@ -1,7 +1,7 @@
 from typing import Optional,List
 from abc import ABC
 from random import randint,choice
-from Items import Weapon,Potion
+from Items import Item,HealPotion,Bow,Sword,Hammer
 
 
 class Character(ABC):
@@ -68,7 +68,7 @@ class Hero(Character):
 
     def statistic(self) -> None:
         print(f'Вы {self.name}, Ваше текущее здоровье: {self.hp} из {self.max_hp}')
-        print(f'Ваш текущий уровень: {self.level} (Опыта до следущего уровня: {self.exp_to_next_lvl})')
+        print(f'Ваш текущий уровень: {self.level} (Опыта до следущего уровня: {self.exp_to_next_lvl- self.exp})')
         print(f'Ваш урон: {self.damage}')
 
     def check_inventory(self) -> None:
@@ -81,10 +81,9 @@ class Hero(Character):
             print('')
 
     def take_item(self,item: 'Item') -> None:
-        from Items import Item
-        if isinstance(item,Item ):
-            print(f'Герой {self.name} подобрал {item}')
-            self.inventory.append(item)
+        if issubclass(item,Item ):
+            print(f'Герой {self.name} подобрал {item().name}')
+            self.inventory.append(item())
         else:
             print('Вы не можете это подобрать!')
 
@@ -127,20 +126,18 @@ class Monster(Character):
     def __repr__(self) -> str:
         return f'{self.name} ({self.hp}HP,{self.damage} урона)'
 
-#Написать классы для каждого монстра
-
 class Goblin(Monster):
     weight = 100
     def __init__(self) -> None:
-        super().__init__('Гоблин',100,10,100,choice([Potion('Зелье здоровье',40),Weapon('Кинжал',10)]))
+        super().__init__('Гоблин',100,10,100,choice([HealPotion,Sword]))
 
 class Skeleton(Monster):
     weight = 70
     def __init__(self) -> None:
-        super().__init__('Скелет',200,20,200,choice([Potion('Зелье здоровье',40),Weapon('Лук',25)]))
+        super().__init__('Скелет',200,20,200,choice([HealPotion,Bow]))
 
 class Orc(Monster):
     weight = 30
     def __init__(self) -> None:
-        super().__init__('Орк',300,50,300,Weapon('Булова',50))
+        super().__init__('Орк',300,50,300,Hammer)
 
