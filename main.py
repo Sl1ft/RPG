@@ -1,16 +1,17 @@
-from Items import Weapon,Potion
+from Items import Sword,Hammer,Bow,HealPotion
 from Character import Hero,Goblin,Skeleton,Orc
 from combat import fight
 from random import choice
 from Rooms import room
 
+monsters = [Goblin,Skeleton,Orc]
+items = [Sword,HealPotion,Hammer,Bow]
 def create_hero():
     hero = Hero(input('Добро пожаловать в игру путник, как тебя зовут? \n'))
-    hero.take_item(Weapon('Фрост Морн', 100, 5))
-    hero.take_item(sword)
-    hero.take_item(sword)
-    hero.take_item(bor)
-    hero.take_item(bottle_of_heal)
+    hero.take_item(Hammer)
+    hero.take_item(Sword)
+    hero.take_item(Bow)
+    hero.take_item(HealPotion)
 
     return hero
 
@@ -32,11 +33,12 @@ def game():
             user1.check_inventory()
         elif a == 'use':
             user1.use()
-
+        elif a == 'test':
+            print(user1.inventory[0] == user1.is_equipped)
         elif a == 'hunt':
-            fight(user1,choice(Monsters))
+            fight(user1,choice(monsters))
         elif a == 'explore':
-            room(user1,Monsters,Items)
+            room(user1,monsters,items)
 
         elif a == 'help':
             print('--- 📜 Доступные команды 📜 ---'.center(50))
@@ -49,12 +51,7 @@ def game():
         else:
             print('Введите действующую команду (help)')
 
-bow = Weapon('Лук',25,15)
-bottle_of_heal = Potion("Зелье лечение",40)
-sword = Weapon('Меч',12)
-bor = Weapon('Булова',20,10)
-Monsters = [Goblin,Skeleton,Orc]
-Items = [sword,bor,bow,bottle_of_heal, Weapon('Фрост Морн', 100, 5)]
+
 
 flag = True
 while flag:
