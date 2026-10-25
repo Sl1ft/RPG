@@ -117,6 +117,17 @@ class Hero(Character):
         else:
             print(f'Ваш инвентарь пуст')
 
+    def make_dct(self) -> dict:
+        return {'name': self.name,
+                'max_hp': self.max_hp,
+                'hp': self.hp,
+                'level': self.level,
+                'exp': self.exp,
+                'exp_to_next_lvl': self.exp_to_next_lvl,
+                'damage': self.damage,
+                'inventory': [i.json_name for i in self.inventory],
+                'is_equipped': self.is_equipped.json_name if self.is_equipped  else None}
+
 class Monster(Character):
     def __init__(self,name:str,hp:int,damage:int,exp_reward:int = 100,loot: Optional['Item'] = None) -> None:
         super().__init__(name,hp,damage)
