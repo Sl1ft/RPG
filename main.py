@@ -3,6 +3,7 @@ from Character import Hero,Goblin,Skeleton,Orc
 from combat import fight
 from random import choice
 from Rooms import room
+from Saves import save
 
 monsters = [Goblin,Skeleton,Orc]
 items = [Sword,HealPotion,Hammer,Bow]
@@ -39,7 +40,9 @@ def game():
             fight(user1,choice(monsters))
         elif a == 'explore':
             room(user1,monsters,items)
-
+        elif a == 'save':
+            file_name = input('Введите имя файла:')
+            save(user1,file_name)
         elif a == 'help':
             print('--- 📜 Доступные команды 📜 ---'.center(50))
             print('stats - показывает статистику'.center(50))
@@ -47,6 +50,7 @@ def game():
             print('explore - ты начинаешь исследовать комнаты подземелья')
             print('hunt - подбирает случайного врага для битвы'.center(50))
             print('inventory - позволяет заглянуть в ваш рюкзак'.center(50))
+            print('save - позволяет сохранить вашу игру'.center(50))
             print('exit - завершает игру'.center(50))
         else:
             print('Введите действующую команду (help)')

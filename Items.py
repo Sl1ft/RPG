@@ -9,6 +9,10 @@ class Item(ABC):
     @abstractmethod
     def use(self,character: 'Character') -> None:
         pass
+    @property
+    @abstractmethod
+    def json_name(self) -> str:
+        pass
 
 class Weapon(Item):
     def __init__(self,name: str,damage: int,weight: int = 20) -> None:
@@ -41,21 +45,25 @@ class Potion(Item):
 
 
 class HealPotion(Potion):
+    json_name = 'heal_potion'
     weight = 40
     def __init__(self) -> None:
         super().__init__("Малое зелье лечения",20)
 
 class Sword(Weapon):
+    json_name = 'sword'
     weight = 20
     def __init__(self) -> None:
         super().__init__('Меч',20)
 
 class Bow(Weapon):
+    json_name = 'bow'
     weight = 15
     def __init__(self) -> None:
         super().__init__('Лук',45)
 
 class Hammer(Weapon):
+    json_name = 'hammer'
     weight = 5
     def __init__(self) -> None:
         super().__init__('Молот',100)
