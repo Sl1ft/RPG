@@ -3,7 +3,7 @@ from Character import Hero,Goblin,Skeleton,Orc
 from combat import fight
 from random import choice
 from Rooms import room
-from Saves import save
+from Saves import save,load_saves,load_hero
 
 monsters = [Goblin,Skeleton,Orc]
 items = [Sword,HealPotion,Hammer,Bow]
@@ -17,7 +17,26 @@ def create_hero():
     return hero
 
 def game():
-    user1 = create_hero()
+    print('Вы хотите создать нового героя или загрузить старого?')
+    print('1 - создать нового/ 2 - загрузить старого')
+    while True:
+        while True:
+            try:
+                user_choose = int(input())
+                break
+            except ValueError:
+                print('Введите число')
+        if user_choose == 1:
+            user1 = create_hero()
+            break
+        elif user_choose == 2:
+            print('Введите название сохранения: ')
+            saves_name = input()
+            user1 = load_hero(saves_name)
+            break
+        else:
+            print('Выберите из двух чисел')
+
     print(f'\nПриветствую {user1.name},игра началась ')
     print('Если хочешь узнать активные команды напиши help')
 
