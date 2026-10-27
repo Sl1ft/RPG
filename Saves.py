@@ -13,8 +13,6 @@ def load_saves(file: str) -> dict:
     except FileNotFoundError:
         return {}
 
-print(load_saves('sex.json'))
-
 def load_hero(file: str) -> Hero:
     info = load_saves(file)
     hero = Hero('Пепа')
