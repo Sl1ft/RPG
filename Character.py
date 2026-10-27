@@ -80,12 +80,20 @@ class Hero(Character):
                 print(i)
             print('')
 
-    def take_item(self,item: 'Item') -> None:
-        if issubclass(item,Item ):
-            print(f'Герой {self.name} подобрал {item().name}')
-            self.inventory.append(item())
+    def input_item(self,item: 'Item') ->None | Item:
+        if issubclass(item,Item):
+            new_item = item()
+            self.inventory.append(new_item)
+            return new_item
         else:
-            print('Вы не можете это подобрать!')
+            return None
+
+    def take_item(self,item: 'Item') -> None:
+        new_item = self.input_item(item)
+        if new_item:
+            print(f'Герой {self.name} подобрал {new_item.name}')
+        else:
+            raise TypeError('Попытка взять что-то, что не является предметом')
 
     def use_item(self,item: 'Item') -> None:
         if item in self.inventory:
@@ -106,13 +114,13 @@ class Hero(Character):
                     b = int(input())
                     if b in range(0,len(self.inventory)+1):
                         if b == 0:
-                            break
+                            print('Вы закрыли рюкзак')
                         else:
                             self.use_item(self.inventory[b - 1])
-                            break
+                        break
                     else:
                         print('❌Введите номер предмета из списка')
-                except (ValueError, IndexError):
+                except ValueError:
                     print('❌Введите номер предмета из приведенного выше списка\n')
         else:
             print(f'Ваш инвентарь пуст')
