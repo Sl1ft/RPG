@@ -9,17 +9,17 @@ monsters = [Goblin,Skeleton,Orc]
 items = [Sword,HealPotion,Hammer,Bow]
 def create_hero():
     hero = Hero(input('Добро пожаловать в игру путник, как тебя зовут? \n'))
-    hero.take_item(Hammer)
-    hero.take_item(Sword)
-    hero.take_item(Bow)
-    hero.take_item(HealPotion)
+    hero.input_item(Hammer)
+    hero.input_item(Sword)
+    hero.input_item(Bow)
+    hero.input_item(HealPotion)
 
     return hero
 
 def game():
-    print('Вы хотите создать нового героя или загрузить старого?')
-    print('1 - создать нового/ 2 - загрузить старого')
     while True:
+        print('Вы хотите создать нового героя или загрузить старого?')
+        print('1 - создать нового/ 2 - загрузить старого')
         while True:
             try:
                 user_choose = int(input())
@@ -32,8 +32,12 @@ def game():
         elif user_choose == 2:
             print('Введите название сохранения: ')
             saves_name = input()
-            user1 = load_hero(saves_name)
-            break
+            try:
+                user1 = load_hero(saves_name)
+                break
+            except KeyError:
+                print('❌Ошибка, не удалось загрузить сохранение❌\n')
+                continue
         else:
             print('Выберите из двух чисел')
 
