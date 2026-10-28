@@ -1,9 +1,11 @@
+from pygments.styles.rainbow_dash import WHITE
+
 from Items import Sword,Hammer,Bow,HealPotion
 from Character import Hero,Goblin,Skeleton,Orc
 from combat import fight
 from random import choice
 from Rooms import room
-from Saves import save,load_saves,load_hero
+from Saves import save, load_saves, load_hero, delete_save, Max_Saves
 
 monsters = [Goblin,Skeleton,Orc]
 items = [Sword,HealPotion,Hammer,Bow]
@@ -64,8 +66,37 @@ def game():
         elif a == 'explore':
             room(user1,monsters,items)
         elif a == 'save':
-            file_name = input('Введите имя файла:')
-            save(user1,file_name)
+            file_name = input('Введите название сохранения:')
+            dct = load_saves()
+            if file_name not in dct and len(dct) >= Max_Saves:
+                print('У вас максимум сохранений')
+                flag = True
+                while flag:
+                    user_answer = input('Хотите перезаписать:  да/нет\n')
+                    if user_answer.lower() in ['да','д','yes','y']:
+                        print('Какой из файлов вы хотите переписать?:')
+                        while True:
+                            for number, key in enumerate(dct.keys(),start=1):
+                                print(f'{number}: {key}')
+                            try:
+                                user_answer = int(input())
+                            except ValueError:
+                                print('Введите ЧИСЛО')
+                                continue
+                            if 1 <= user_answer <= len(dct):
+                                delete_save(list(dct)[user_answer-1])
+                                save(user1,file_name)
+                                flag = False
+                                break
+                            else:
+                                print('Введите число из списка')
+                                continue
+                    elif user_answer.lower() in ['нет','н','no','n']:
+                        flag = False
+                    else:
+                        print('Выбирете да или нет')
+            else:
+                save(user1,file_name)
         elif a == 'help':
             print('--- 📜 Доступные команды 📜 ---'.center(50))
             print('stats - показывает статистику'.center(50))
