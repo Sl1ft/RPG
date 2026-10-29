@@ -36,6 +36,7 @@ def game():
             saves_name = input()
             try:
                 user1 = load_hero(saves_name)
+                print('Загрузка произошла успешно')
                 break
             except KeyError:
                 print('❌Ошибка, не удалось загрузить сохранение❌\n')
@@ -66,9 +67,9 @@ def game():
         elif a == 'explore':
             room(user1,monsters,items)
         elif a == 'save':
-            file_name = input('Введите название сохранения:')
+            saves_name = input('Введите название сохранения:')
             dct = load_saves()
-            if file_name not in dct and len(dct) >= Max_Saves:
+            if saves_name not in dct and len(dct) >= Max_Saves:
                 print('У вас максимум сохранений')
                 flag = True
                 while flag:
@@ -85,7 +86,7 @@ def game():
                                 continue
                             if 1 <= user_answer <= len(dct):
                                 delete_save(list(dct)[user_answer-1])
-                                save(user1,file_name)
+                                save(user1,saves_name)
                                 flag = False
                                 break
                             else:
@@ -96,7 +97,7 @@ def game():
                     else:
                         print('Выбирете да или нет')
             else:
-                save(user1,file_name)
+                save(user1,saves_name)
         elif a == 'help':
             print('--- 📜 Доступные команды 📜 ---'.center(50))
             print('stats - показывает статистику'.center(50))
