@@ -1,6 +1,7 @@
 import pytest
 from Character import Hero
 from Items import Hammer, Sword, HealPotion
+from Saves import save,load_hero
 
 
 @pytest.fixture
@@ -50,3 +51,10 @@ class TestSaves:
             "inventory": ["sword","heal_potion"],
             "is_equipped": "hammer"
         }
+    def test_make_dct_items_load(self,hero_items,tmp_path):
+        file = tmp_path / "TEST.json"
+        save(hero_items,"test",file)
+        hero2 = load_hero("test",file)
+
+        assert hero_items.make_dct() == hero2.make_dct()
+        assert hero2 is not hero_items
