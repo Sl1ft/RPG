@@ -2,7 +2,10 @@ from typing import Optional,List
 from abc import ABC
 from random import randint,choice
 from Items import Item,HealPotion,Bow,Sword,Hammer
+INVENTORY_LIMIT = 10
 
+class InventoryFullError(Exception):
+    pass
 
 class Character(ABC):
     def __init__(self,name: str, hp: int = 100, damage: int = 2) -> None:
@@ -80,20 +83,22 @@ class Hero(Character):
                 print(i)
             print('')
 
-    def input_item(self,item: 'Item') ->None | Item:
-        if issubclass(item,Item):
+    def input_item(self,item: 'Item') -> Item:
+        if len(self.inventory) < INVENTORY_LIMIT:
             new_item = item()
             self.inventory.append(new_item)
             return new_item
         else:
-            return None
+            raise InventoryFullError("Инвентарь переполнен")
 
-    def take_item(self,item: 'Item') -> None:
-        new_item = self.input_item(item)
-        if new_item:
-            print(f'Герой {self.name} подобрал {new_item.name}')
+    def take_item(self,item: type('Item')) -> None:
+        try:
+            new_item = self.input_item(item)
+        except InventoryFullError:
+            print('Инвентарь переполнен')
         else:
-            raise TypeError('Попытка взять что-то, что не является предметом')
+            print(f'Герой {self.name} подобрал {new_item.name}')
+
 
     def use_item(self,item: 'Item') -> None:
         if item in self.inventory:
