@@ -27,10 +27,11 @@ def fight(hero: 'Hero', MonsterClass: type('Monster') ) -> None:
 
         if not monster.is_alive:
             print(f'Вы победили {monster.name}')
+            hero.gain_exp(monster.exp_reward)
             if monster.loot:
                 print(f'🔎Вы нашли предмет ({monster.loot().name} добавлено в инвентарь)')
                 hero.take_item(monster.loot)
-            hero.gain_exp(monster.exp_reward)
+
 
             break
         monster.attack(hero)
