@@ -83,7 +83,7 @@ class Hero(Character):
                 print(i)
             print('')
 
-    def input_item(self,item: 'Item') -> Item:
+    def input_item(self,item: type[Item]) -> Item:
         if len(self.inventory) < INVENTORY_LIMIT:
             new_item = item()
             self.inventory.append(new_item)
@@ -91,13 +91,37 @@ class Hero(Character):
         else:
             raise InventoryFullError("Инвентарь переполнен")
 
-    def take_item(self,item: type('Item')) -> None:
+    def take_item(self,item: type[Item]) -> None:
         try:
             new_item = self.input_item(item)
         except InventoryFullError:
-            print('Инвентарь переполнен')
+            print('\nИнвентарь переполнен\n')
+            found = item()
+            self.drop_menu(found)
         else:
             print(f'Герой {self.name} подобрал {new_item.name}')
+
+    def drop_menu(self, found: Item) -> None:
+        while True:
+            print(f'Найден: {found}. Что выбросить?\n')
+            for num, value in enumerate(self.inventory, start=1):
+                print(f'{num}: {value}')
+            print('0: Выбросить найденный предмет\n')
+            try:
+                b = int(input())
+            except ValueError:
+                print('\n❌Введите номер предмета из приведенного выше списка\n')
+            else:
+                if 0 <= b <= len(self.inventory):
+                    if b == 0:
+                        print(f'Вы выбросили {found}')
+                    else:
+                        dropped = self.drop_item(b - 1)
+                        print(f'Вы выбросили {dropped}. И взяли {found}')
+                        self.input_item(type(found))
+                    break
+                else:
+                    print('\n❌Введите номер предмета из списка\n')
 
 
     def use_item(self,item: 'Item') -> None:
@@ -111,8 +135,8 @@ class Hero(Character):
         if self.inventory:
             while True:
                 print('Что вы хотите использовать?')
-                for num, item in enumerate(self.inventory, start=1):
-                    print(f'{num}: {item}')
+                for num, value in enumerate(self.inventory, start=1):
+                    print(f'{num}: {value}')
                 print('0: Выйти')
 
                 try:
@@ -129,6 +153,9 @@ class Hero(Character):
                     print('❌Введите номер предмета из приведенного выше списка\n')
         else:
             print(f'Ваш инвентарь пуст')
+    def drop_item(self,index: int) -> Item:
+        item = self.inventory.pop(index)
+        return item
 
     def make_dct(self) -> dict:
         return {'name': self.name,
