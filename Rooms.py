@@ -11,7 +11,7 @@ class Events(Enum):
 def chance(some_list):
     return choices(some_list, weights=[i.weight for i in some_list], k=1)[0]
 
-events = [i for i in Events if i != Events.TRAP]
+ROOM_EVENTS = [i for i in Events if i != Events.TRAP]
 
 def room(hero: 'Hero', monsters_list: list,items_list:list):
     a = randint(1,3)
@@ -27,7 +27,7 @@ def room(hero: 'Hero', monsters_list: list,items_list:list):
 
         direction = choice(directions)
         choose.append(direction)
-        current_events.setdefault(direction, choice(events))
+        current_events.setdefault(direction, choice(ROOM_EVENTS))
         directions.remove(direction)
         print(f'{direction} от вас находится {current_events[direction].value}')
     print('\nКуда вы собираетесь пойти?')
