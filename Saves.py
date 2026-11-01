@@ -4,7 +4,7 @@ from Character import Hero
 from Items import Sword, HealPotion,Bow,Hammer
 import json
 SAVES_FILE = 'Saves.json'
-Max_Saves = 3
+MAX_SAVES = 3
 
 items_dict = {'sword': Sword, 'heal_potion': HealPotion, 'bow': Bow, 'hammer': Hammer}
 

@@ -1,11 +1,9 @@
-from pygments.styles.rainbow_dash import WHITE
-
 from Items import Sword,Hammer,Bow,HealPotion
 from Character import Hero,Goblin,Skeleton,Orc
 from combat import fight
 from random import choice
 from Rooms import room
-from Saves import save, load_saves, load_hero, delete_save, Max_Saves
+from Saves import save, load_saves, load_hero, delete_save, MAX_SAVES
 
 monsters = [Goblin,Skeleton,Orc]
 items = [Sword,HealPotion,Hammer,Bow]
@@ -17,6 +15,41 @@ def create_hero():
     hero.input_item(HealPotion)
 
     return hero
+def save_choose(hero: Hero) -> None:
+    saves_name = input('Введите название сохранения:')
+    saves = load_saves()
+    if saves_name not in saves and len(saves) >= MAX_SAVES:
+        print('У вас максимум сохранений')
+        slot = ask_slot_to_rewrite(saves)
+        if slot is not None:
+            delete_save(slot)
+            save(hero,saves_name)
+        else:
+            print('Сохранение отменено')
+    else:
+        save(hero, saves_name)
+
+def ask_slot_to_rewrite(saves: dict) -> str | None:
+    while True:
+        user_answer = input('Хотите перезаписать:  да/нет\n').lower()
+        if user_answer in ['да', 'д', 'yes', 'y']:
+            print('Какой из файлов вы хотите переписать?:')
+            while True:
+                for number, key in enumerate(saves.keys(), start=1):
+                    print(f'{number}: {key}')
+                try:
+                    slot = int(input())
+                except ValueError:
+                    print('Введите ЧИСЛО')
+                    continue
+                if 1 <= slot <= len(saves):
+                    return list(saves)[slot - 1]
+                else:
+                    print('Введите число из списка')
+        elif user_answer in ['нет','н','no','n']:
+            return None
+        else:
+            print('Выберите да или нет')
 
 def game():
     while True:
@@ -67,37 +100,7 @@ def game():
         elif a == 'explore':
             room(user1,monsters,items)
         elif a == 'save':
-            saves_name = input('Введите название сохранения:')
-            dct = load_saves()
-            if saves_name not in dct and len(dct) >= Max_Saves:
-                print('У вас максимум сохранений')
-                flag = True
-                while flag:
-                    user_answer = input('Хотите перезаписать:  да/нет\n')
-                    if user_answer.lower() in ['да','д','yes','y']:
-                        print('Какой из файлов вы хотите переписать?:')
-                        while True:
-                            for number, key in enumerate(dct.keys(),start=1):
-                                print(f'{number}: {key}')
-                            try:
-                                user_answer = int(input())
-                            except ValueError:
-                                print('Введите ЧИСЛО')
-                                continue
-                            if 1 <= user_answer <= len(dct):
-                                delete_save(list(dct)[user_answer-1])
-                                save(user1,saves_name)
-                                flag = False
-                                break
-                            else:
-                                print('Введите число из списка')
-                                continue
-                    elif user_answer.lower() in ['нет','н','no','n']:
-                        flag = False
-                    else:
-                        print('Выбирете да или нет')
-            else:
-                save(user1,saves_name)
+            save_choose(user1)
         elif a == 'help':
             print('--- 📜 Доступные команды 📜 ---'.center(50))
             print('stats - показывает статистику'.center(50))
