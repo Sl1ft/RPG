@@ -1,6 +1,6 @@
 import pytest
 from Character import Hero,INVENTORY_LIMIT,InventoryFullError
-from Items import Hammer, Sword, HealPotion
+from Items import Hammer, Sword, HealPotion, Bow
 from Saves import save,load_hero
 
 
@@ -16,7 +16,8 @@ def hero_items(hero):
     return hero
 @pytest.fixture
 def hero_full(hero):
-    for _ in range(INVENTORY_LIMIT):
+    hero.input_item(Hammer)
+    for _ in range(INVENTORY_LIMIT - 1):
         hero.input_item(Sword)
     return hero
 
@@ -67,6 +68,8 @@ class TestSaves:
         assert hero_items.make_dct() == hero2.make_dct()
         assert hero2 is not hero_items
 
+class TestInventory:
+
     def test_full_inventory(self,hero_full):
         with pytest.raises(InventoryFullError):
             hero_full.input_item(Sword)
@@ -84,3 +87,13 @@ class TestSaves:
     def test_drop_item_bad_index(self,hero_items):
         with pytest.raises(IndexError):
             hero_items.drop_item(99)
+
+    def test_drop_menu(self,monkeypatch,hero_full):
+        found = Bow()
+        monkeypatch.setattr('builtins.input', lambda prompt='': '1' )
+        hero_full.drop_menu(found)
+        inventory = [i.json_name for i in hero_full.inventory]
+
+        assert len(hero_full.inventory) == INVENTORY_LIMIT
+        assert inventory[-1] == 'bow'
+        assert inventory[0] != 'hammer'
