@@ -1,4 +1,5 @@
 from selectors import SelectSelector
+from xmlrpc.client import FastMarshaller
 
 from Character import Hero
 from Items import Sword, HealPotion,Bow,Hammer
@@ -8,38 +9,40 @@ MAX_SAVES = 3
 
 items_dict = {'sword': Sword, 'heal_potion': HealPotion, 'bow': Bow, 'hammer': Hammer}
 
-def save(hero: 'Hero',saves_name:str,f: str= SAVES_FILE) -> None:
-    dct = load_saves(f)
-    flag = True
+def write_saves(dct:dict,path:str = SAVES_FILE) -> None:
+    with open(path,'w', encoding='utf-8') as file:
+        json.dump({"Saves": dct},file, ensure_ascii=False ,indent=3)
+
+def save(hero: 'Hero',saves_name:str,path: str= SAVES_FILE) -> None:
+    dct = load_saves(path)
+    is_new = True
     if saves_name in dct:
-        flag= False
+        is_new = False
     dct[saves_name] = hero.make_dct()
-    with open(f, 'w',encoding= 'utf-8') as file:
-        json.dump({"Saves": dct},file,ensure_ascii=False,indent=3)
-        if flag:
-            print('Успешно сохранено')
-        else:
-            print('Сохранение перезаписанно')
+    write_saves(dct,path)
+    if is_new:
+        print('Успешно сохранено')
+    else:
+        print('Сохранение перезаписано')
 
-def delete_save(name:str,f: str= SAVES_FILE) -> None:
-    dct = load_saves()
+def delete_save(name:str,path: str= SAVES_FILE) -> None:
+    dct = load_saves(path)
     dct.pop(name)
-    with open(f,'w',encoding='utf-8') as file:
-        json.dump({'Saves': dct},file,ensure_ascii=False,indent=3)
+    write_saves(dct,path)
 
 
 
-def load_saves(f: str= SAVES_FILE) -> dict:
+def load_saves(path: str= SAVES_FILE) -> dict:
     try:
-        with open(f,'r',encoding='utf-8') as file:
+        with open(path,'r',encoding='utf-8') as file:
             return json.load(file).get('Saves', {})
     except json.decoder.JSONDecodeError:
         return {}
     except FileNotFoundError:
         return {}
 
-def load_hero(saves_name:str,f: str= SAVES_FILE) -> Hero:
-    info = load_saves(f)[saves_name]
+def load_hero(saves_name:str,path: str= SAVES_FILE) -> Hero:
+    info = load_saves(path)[saves_name]
     hero = Hero(info['name'])
     hero.max_hp = info['max_hp']
     hero.hp = info['hp']
