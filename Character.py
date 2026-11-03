@@ -179,10 +179,11 @@ class Hero(Character):
                 'gold': self.gold}
 
 class Monster(Character):
-    def __init__(self,name:str,hp:int,damage:int,exp_reward:int = 100,loot: Optional['Item'] = None) -> None:
+    def __init__(self,name:str,hp:int,damage:int,exp_reward:int = 100, gold_reward: int = 100,loot: type[Item] = None) -> None:
         super().__init__(name,hp,damage)
         self.exp_reward:int = exp_reward
-        self.loot: Optional['Item'] = loot
+        self.loot: type[Item] = loot
+        self.gold_reward: int = gold_reward
 
     def __repr__(self) -> str:
         return f'{self.name} ({self.hp}HP,{self.damage} урона)'
@@ -190,15 +191,15 @@ class Monster(Character):
 class Goblin(Monster):
     weight = 100
     def __init__(self) -> None:
-        super().__init__('Гоблин',100,10,100,choice([HealPotion,Sword]))
+        super().__init__('Гоблин',100,10,100,randint(80,120),choice([HealPotion,Sword]))
 
 class Skeleton(Monster):
     weight = 70
     def __init__(self) -> None:
-        super().__init__('Скелет',200,20,200,choice([HealPotion,Bow]))
+        super().__init__('Скелет',200,20,200,randint(250,400),choice([HealPotion,Bow]))
 
 class Orc(Monster):
     weight = 30
     def __init__(self) -> None:
-        super().__init__('Орк',300,50,300,Hammer)
+        super().__init__('Орк',300,50,300,randint(700,1000),Hammer)
 
