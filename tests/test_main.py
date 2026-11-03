@@ -44,7 +44,8 @@ class TestSaves:
          "exp_to_next_lvl": 100,
          "damage": 3,
          "inventory": [],
-         "is_equipped": None
+         "is_equipped": None,
+         "gold": 0
       }
 
     def test_make_dct_items(self,hero_items):
@@ -57,7 +58,8 @@ class TestSaves:
             "exp_to_next_lvl": 100,
             "damage": 102,
             "inventory": ["sword","heal_potion"],
-            "is_equipped": "hammer"
+            "is_equipped": "hammer",
+            "gold": 0
         }
 
     def test_make_dct_items_load(self,hero_items,tmp_path):
