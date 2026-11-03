@@ -7,11 +7,21 @@ class Events(Enum):
     TREASURE = "Сокровище"
     UNKNOWN = "Неизвестность"
     TRAP = "Ловушка"
+    #Shop = "Торговец"
 
 def chance(some_list):
     return choices(some_list, weights=[i.weight for i in some_list], k=1)[0]
 
 ROOM_EVENTS = [i for i in Events if i != Events.TRAP]
+
+def open_treasure(hero: 'Hero',item_list: list):
+    treasure = choices(['item','small_gold','big_gold'], weights= [40,50,10], k=1)[0]
+    if treasure == 'item':
+        hero.take_item(chance(item_list))
+    elif treasure == 'small_gold':
+        hero.gain_gold(randint(150,300))
+    elif treasure == 'big_gold':
+        hero.gain_gold(randint(600,800))
 
 def room(hero: 'Hero', monsters_list: list,items_list:list):
     a = randint(1,3)
@@ -43,8 +53,7 @@ def room(hero: 'Hero', monsters_list: list,items_list:list):
                     fight(hero,chosen_monstr)
                     break
                 elif current_events[choose[user_input-1]] == Events.TREASURE:
-                    chosen_item = chance(items_list)
-                    hero.take_item(chosen_item)
+                    open_treasure(hero, items_list)
                     break
                 elif current_events[choose[user_input-1]] == Events.UNKNOWN:
                     chosen_event = choices([e for e in Events if e != Events.UNKNOWN], weights=[60,50,30], k=1)[0]
@@ -53,8 +62,7 @@ def room(hero: 'Hero', monsters_list: list,items_list:list):
                         fight(hero,chance(monsters_list))
                         break
                     elif chosen_event == Events.TREASURE:
-                        hero.take_item(chance(items_list))
-                        break
+                        open_treasure(hero,items_list)
                     elif chosen_event == Events.TRAP:
                         trap_damage = randint(10,50)
                         print(f'Вы попались в ловушку и вам нанесло {trap_damage} урона')
