@@ -52,4 +52,5 @@ def load_hero(saves_name:str,path: str= SAVES_FILE) -> Hero:
     hero.inventory = [items_dict[i]() for i in info['inventory']]
     hero.is_equipped = items_dict[info['is_equipped']]() if info['is_equipped'] else None
     hero.damage = info['damage']
+    hero.gold = info['gold']
     return hero
