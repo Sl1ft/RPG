@@ -4,6 +4,8 @@ from random import randint,choice
 from Items import Item,HealPotion,Bow,Sword,Hammer
 INVENTORY_LIMIT = 10
 
+class NotEnoughGold(Exception):
+    pass
 class InventoryFullError(Exception):
     pass
 
@@ -72,6 +74,12 @@ class Hero(Character):
     def gain_gold(self,gold:int):
         self.gold += gold
         print(f'+{gold} 🪙')
+
+    def spend_gold(self,cost:int) -> None:
+        if self.gold >= cost:
+            self.gold -= cost
+        else:
+            raise NotEnoughGold('У вас недостаточно золота')
 
     def statistic(self) -> None:
         print(f'Вы {self.name}, Ваше текущее здоровье: {self.hp} из {self.max_hp}')
