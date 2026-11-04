@@ -1,5 +1,7 @@
+from contextlib import nullcontext
+
 import pytest
-from Character import Hero,INVENTORY_LIMIT,InventoryFullError
+from Character import Hero, INVENTORY_LIMIT, InventoryFullError, NotEnoughGold
 from Items import Hammer, Sword, HealPotion, Bow
 from Saves import save,load_hero
 
@@ -99,3 +101,15 @@ class TestInventory:
         assert len(hero_full.inventory) == INVENTORY_LIMIT
         assert inventory[-1] == 'bow'
         assert inventory[0] != 'hammer'
+class TestGold:
+    @pytest.mark.parametrize(
+        "gold,cost,expectation,result",[
+            (100,100,nullcontext(),0),
+            (100,101,pytest.raises(NotEnoughGold),100)
+        ]
+    )
+    def test_spend_gold(self,hero,gold,cost,expectation,result):
+        hero.gold = gold
+        with expectation:
+            hero.spend_gold(cost)
+        assert hero.gold == result
