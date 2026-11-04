@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 
+SELL_RATIO = 0.7
+
 class Item(ABC):
-    def __init__(self,name:str,weight) -> None:
+    def __init__(self,name:str,weight: int) -> None:
         self.name: str = name
         self.weight: int = weight
     def __repr__(self) -> str:
@@ -11,8 +13,15 @@ class Item(ABC):
         pass
     @property
     @abstractmethod
+    def price(self) -> int:
+        pass
+    @property
+    @abstractmethod
     def json_name(self) -> str:
         pass
+    @property
+    def sell_price(self) -> int:
+        return round(self.price * SELL_RATIO)
 
 class Weapon(Item):
     def __init__(self,name: str,damage: int,weight: int = 20) -> None:
@@ -47,23 +56,27 @@ class Potion(Item):
 class HealPotion(Potion):
     json_name = 'heal_potion'
     weight = 40
+    price = 300
     def __init__(self) -> None:
         super().__init__("Малое зелье лечения",20)
 
 class Sword(Weapon):
     json_name = 'sword'
     weight = 20
+    price = 250
     def __init__(self) -> None:
         super().__init__('Меч',20)
 
 class Bow(Weapon):
     json_name = 'bow'
     weight = 15
+    price = 500
     def __init__(self) -> None:
         super().__init__('Лук',45)
 
 class Hammer(Weapon):
     json_name = 'hammer'
     weight = 5
+    price = 1500
     def __init__(self) -> None:
         super().__init__('Молот',100)
