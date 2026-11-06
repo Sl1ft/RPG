@@ -3,9 +3,6 @@ from abc import ABC, abstractmethod
 SELL_RATIO = 0.7
 
 class Item(ABC):
-    def __init__(self,name:str,weight: int) -> None:
-        self.name: str = name
-        self.weight: int = weight
     def __repr__(self) -> str:
         return f'{self.name}'
     @abstractmethod
@@ -24,8 +21,7 @@ class Item(ABC):
         return round(self.price * SELL_RATIO)
 
 class Weapon(Item):
-    def __init__(self,name: str,damage: int,weight: int = 20) -> None:
-        super().__init__(name,weight)
+    def __init__(self,damage: int) -> None:
         self.damage: int = damage
 
     def __repr__(self) -> str:
@@ -42,8 +38,7 @@ class Weapon(Item):
 
 
 class Potion(Item):
-    def __init__(self,name: str,effect: int,weight: int = 40) -> None:
-        super().__init__(name,weight)
+    def __init__(self,effect: int) -> None:
         self.effect: int = effect
     def __repr__(self) -> str:
         return f'{super().__repr__()}(восстанавливает {self.effect} здоровья)'
@@ -54,29 +49,33 @@ class Potion(Item):
 
 
 class HealPotion(Potion):
+    name = "Малое зелье лечения"
     json_name = 'heal_potion'
     weight = 40
     price = 300
     def __init__(self) -> None:
-        super().__init__("Малое зелье лечения",20)
+        super().__init__(20)
 
 class Sword(Weapon):
+    name = 'Меч'
     json_name = 'sword'
     weight = 20
     price = 250
     def __init__(self) -> None:
-        super().__init__('Меч',20)
+        super().__init__(20)
 
 class Bow(Weapon):
+    name = 'Лук'
     json_name = 'bow'
     weight = 15
     price = 500
     def __init__(self) -> None:
-        super().__init__('Лук',45)
+        super().__init__(45)
 
 class Hammer(Weapon):
+    name = 'Молот'
     json_name = 'hammer'
     weight = 5
     price = 1500
     def __init__(self) -> None:
-        super().__init__('Молот',100)
+        super().__init__(100)
