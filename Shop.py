@@ -9,7 +9,7 @@ class OutOfStockError(Exception):
 
 class Shop:
     def __init__(self,shop_dict: dict = None) -> None:
-        if shop_dict != None:
+        if shop_dict is not None:
             self.shop_dict: dict = shop_dict
         else:
             self.shop_dict = self._generate()
@@ -32,11 +32,21 @@ class Shop:
         else:
             raise OutOfStockError("Данный предмет закончился")
 
-a = Shop()
-print(a.shop_dict)
-dct = {Hammer: 1, Sword: 1, Bow: 1}
-b = Shop(dct)
-print(b.shop_dict)
-b.item_sell(Hammer)
-print(b.shop_dict)
+    def buy_menu(self) -> None:
+        for item,count in self.shop_dict.items():
+            print(f'{item.name} | ({count}шт) | {item.price}🪙')
 
+
+    def choose_buy(self,number:int) -> type[Item]:
+        lst = enumerate(self.shop_dict.keys(),start=1)
+        for i,v in lst:
+            if i == number:
+                return v
+
+
+# a = Shop()
+# print(a.shop_dict)
+# a.buy_menu()
+# b = a.choose_buy(3)
+# print(b)
+# a.buy_menu()

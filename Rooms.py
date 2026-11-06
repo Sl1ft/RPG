@@ -1,20 +1,21 @@
 from random import randint,choice,choices
 from combat import fight
 from enum import Enum
+from Shop import Shop
 
 class Events(Enum):
     MONSTER = "Монстр"
     TREASURE = "Сокровище"
     UNKNOWN = "Неизвестность"
     TRAP = "Ловушка"
-    #Shop = "Торговец"
+    SHOP = "Торговец"
 
 def chance(some_list):
     return choices(some_list, weights=[i.weight for i in some_list], k=1)[0]
 
 ROOM_EVENTS = [i for i in Events if i != Events.TRAP]
 
-def open_treasure(hero: 'Hero',item_list: list):
+def open_treasure(hero: 'Hero',item_list: list) -> None:
     treasure = choices(['item','small_gold','big_gold'], weights= [40,50,10], k=1)[0]
     if treasure == 'item':
         hero.take_item(chance(item_list))
@@ -22,6 +23,28 @@ def open_treasure(hero: 'Hero',item_list: list):
         hero.gain_gold(randint(150,300))
     elif treasure == 'big_gold':
         hero.gain_gold(randint(600,800))
+# hero: 'Hero', item_list: list
+def open_shop() -> None:
+    shop = Shop()
+    chose = ['Купить','Продать','Выйти из магазина']
+    while True:
+        for i,move in enumerate(chose,start=1):
+            print(f'{i}: {move}')
+        try:
+            user_input = int(input())
+        except ValueError:
+            print('Введите число!')
+            continue
+        if 0 < user_input <= len(chose):
+            if user_input == 1:
+                shop.buy_menu()
+                print()
+            elif user_input == 2:
+                pass
+            elif user_input == 3:
+                return None
+        else:
+            print('Выберите вариант из предложенных!')
 
 def room(hero: 'Hero', monsters_list: list,items_list:list):
     a = randint(1,3)
@@ -55,14 +78,18 @@ def room(hero: 'Hero', monsters_list: list,items_list:list):
                 elif current_events[choose[user_input-1]] == Events.TREASURE:
                     open_treasure(hero, items_list)
                     break
+                elif current_events[choose[user_input-1]] == Events.SHOP:
+                    open_shop(hero,items_list)
+
                 elif current_events[choose[user_input-1]] == Events.UNKNOWN:
-                    chosen_event = choices([e for e in Events if e != Events.UNKNOWN], weights=[60,50,30], k=1)[0]
+                    chosen_event = choices([e for e in Events if e != Events.UNKNOWN], weights=[60,50,30,20], k=1)[0]
                     print(f'В комнате за слоем тумана, оказывается {chosen_event.value}')
                     if chosen_event == Events.MONSTER:
                         fight(hero,chance(monsters_list))
                         break
                     elif chosen_event == Events.TREASURE:
                         open_treasure(hero,items_list)
+                        break
                     elif chosen_event == Events.TRAP:
                         trap_damage = randint(10,50)
                         print(f'Вы попались в ловушку и вам нанесло {trap_damage} урона')
