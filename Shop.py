@@ -33,8 +33,13 @@ class Shop:
             raise OutOfStockError("Данный предмет закончился")
 
     def buy_menu(self) -> None:
-        for item,count in self.shop_dict.items():
-            print(f'{item.name} | ({count}шт) | {item.price}🪙')
+
+        for number,(item,count) in enumerate(self.shop_dict.items(), start= 1):
+            if count > 0:
+                print(f'{number}. {item.name} | ({count}шт) | {item.price}🪙')
+            else:
+                print(f'{number}. {item.name} | Продано')
+
 
 
     def choose_buy(self,number:int) -> type[Item]:
@@ -42,11 +47,3 @@ class Shop:
         for i,v in lst:
             if i == number:
                 return v
-
-
-# a = Shop()
-# print(a.shop_dict)
-# a.buy_menu()
-# b = a.choose_buy(3)
-# print(b)
-# a.buy_menu()
