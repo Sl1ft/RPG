@@ -1,7 +1,9 @@
 from random import randint,choice,choices
+from Character import INVENTORY_LIMIT, Hero, NotEnoughGold, InventoryFullError
 from combat import fight
 from enum import Enum
-from Shop import Shop
+from Shop import Shop, OutOfStockError
+
 
 class Events(Enum):
     MONSTER = "Монстр"
@@ -23,8 +25,12 @@ def open_treasure(hero: 'Hero',item_list: list) -> None:
         hero.gain_gold(randint(150,300))
     elif treasure == 'big_gold':
         hero.gain_gold(randint(600,800))
-# hero: 'Hero', item_list: list
-def open_shop() -> None:
+
+hero = Hero('Vacya')
+hero.gain_gold(2000)
+
+
+def open_shop(hero: 'Hero') -> None:
     shop = Shop()
     chose = ['Купить','Продать','Выйти из магазина']
     while True:
@@ -37,14 +43,49 @@ def open_shop() -> None:
             continue
         if 0 < user_input <= len(chose):
             if user_input == 1:
-                shop.buy_menu()
-                print()
+                while True:
+                    shop.buy_menu()
+                    print(f'У вас {hero.gold}')
+                    try:
+                        user_item = int(input())
+                    except ValueError:
+                        print('Введите число')
+                        continue
+                    if 0 < user_item <= len(shop.shop_dict):
+                        item = shop.choose_buy(user_item)
+                        try:
+                            buy_item(hero,shop,item)
+                        except OutOfStockError:
+                            print('Предмет закончился')
+                        except NotEnoughGold:
+                            print('У вас недостаточно золота')
+                        except InventoryFullError:
+                            print('Ваш рюкзак полон')
+                        else:
+                            # print(f'-{item.price}🪙')
+                            print(f'Вы купили {item.name}')
+                        break
+                    else:
+                        print('Введите число из выше перечисленных')
             elif user_input == 2:
                 pass
             elif user_input == 3:
                 return None
         else:
             print('Выберите вариант из предложенных!')
+
+def buy_item(hero: 'Hero', shop: 'Shop', item: 'Item') -> None:
+    shop.item_sell(item)
+    try:
+        hero.spend_gold(item.price)
+    except NotEnoughGold:
+        shop.shop_dict[item] += 1
+        raise
+    try:
+        hero.input_item(item)
+    except InventoryFullError:
+        hero.gold += item.price
+        shop.shop_dict[item] += 1
 
 def room(hero: 'Hero', monsters_list: list,items_list:list):
     a = randint(1,3)
