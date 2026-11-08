@@ -1,7 +1,4 @@
 from random import randint,choice,choices
-
-from pygments.styles.rainbow_dash import WHITE
-
 from Character import INVENTORY_LIMIT, Hero, NotEnoughGold, InventoryFullError, ItemNotFoundError
 from combat import fight
 from enum import Enum
@@ -131,6 +128,7 @@ def room(hero: 'Hero', monsters_list: list,items_list:list):
                     break
                 elif current_events[choose[user_input-1]] == Events.SHOP:
                     open_shop(hero)
+                    break
                 elif current_events[choose[user_input-1]] == Events.UNKNOWN:
                     chosen_event = choices([e for e in Events if e != Events.UNKNOWN], weights=[60,50,30,20], k=1)[0]
                     print(f'В комнате за слоем тумана, оказывается {chosen_event.value}')
