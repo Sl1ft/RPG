@@ -1,5 +1,8 @@
 from random import randint,choice,choices
-from Character import INVENTORY_LIMIT, Hero, NotEnoughGold, InventoryFullError
+
+from pygments.styles.rainbow_dash import WHITE
+
+from Character import INVENTORY_LIMIT, Hero, NotEnoughGold, InventoryFullError, ItemNotFoundError
 from combat import fight
 from enum import Enum
 from Shop import Shop, OutOfStockError
@@ -26,10 +29,6 @@ def open_treasure(hero: 'Hero',item_list: list) -> None:
     elif treasure == 'big_gold':
         hero.gain_gold(randint(600,800))
 
-hero = Hero('Vacya')
-hero.gain_gold(2000)
-
-
 def open_shop(hero: 'Hero') -> None:
     shop = Shop()
     chose = ['Купить','Продать','Выйти из магазина']
@@ -45,13 +44,16 @@ def open_shop(hero: 'Hero') -> None:
             if user_input == 1:
                 while True:
                     shop.buy_menu()
+                    print(f'{len(shop.shop_dict)+1}. Выйти')
                     print(f'У вас {hero.gold}')
                     try:
                         user_item = int(input())
                     except ValueError:
                         print('Введите число')
                         continue
-                    if 0 < user_item <= len(shop.shop_dict):
+                    if 0 < user_item <= len(shop.shop_dict)+1:
+                        if user_item == len(shop.shop_dict)+1:
+                            break
                         item = shop.choose_buy(user_item)
                         try:
                             buy_item(hero,shop,item)
@@ -62,13 +64,20 @@ def open_shop(hero: 'Hero') -> None:
                         except InventoryFullError:
                             print('Ваш рюкзак полон')
                         else:
-                            # print(f'-{item.price}🪙')
                             print(f'Вы купили {item.name}')
-                        break
                     else:
                         print('Введите число из выше перечисленных')
             elif user_input == 2:
-                pass
+                while True:
+                    a = hero.sell_menu()
+                    if a is not None:
+                        try:
+                            hero.sell_item(a)
+                        except ItemNotFoundError:
+                            print('Выбранного предмета нету в инвентаре')
+                            continue
+                    else:
+                        break
             elif user_input == 3:
                 return None
         else:
@@ -86,6 +95,7 @@ def buy_item(hero: 'Hero', shop: 'Shop', item: 'Item') -> None:
     except InventoryFullError:
         hero.gold += item.price
         shop.shop_dict[item] += 1
+        raise
 
 def room(hero: 'Hero', monsters_list: list,items_list:list):
     a = randint(1,3)
@@ -120,8 +130,7 @@ def room(hero: 'Hero', monsters_list: list,items_list:list):
                     open_treasure(hero, items_list)
                     break
                 elif current_events[choose[user_input-1]] == Events.SHOP:
-                    open_shop(hero,items_list)
-
+                    open_shop(hero)
                 elif current_events[choose[user_input-1]] == Events.UNKNOWN:
                     chosen_event = choices([e for e in Events if e != Events.UNKNOWN], weights=[60,50,30,20], k=1)[0]
                     print(f'В комнате за слоем тумана, оказывается {chosen_event.value}')
@@ -136,6 +145,9 @@ def room(hero: 'Hero', monsters_list: list,items_list:list):
                         print(f'Вы попались в ловушку и вам нанесло {trap_damage} урона')
                         hero.hp -= trap_damage
                         break
+                    elif chosen_event == Events.SHOP:
+                        print(f'Вас встречает мужчина, который представился торговцем')
+                        open_shop(hero)
             else:
                 print('Введите вариант из списка')
         except(ValueError,IndexError):
