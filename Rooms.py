@@ -130,7 +130,7 @@ def room(hero: 'Hero', monsters_list: list,items_list:list):
                     open_shop(hero)
                     break
                 elif current_events[choose[user_input-1]] == Events.UNKNOWN:
-                    chosen_event = choices([e for e in Events if e != Events.UNKNOWN], weights=[60,50,30,20], k=1)[0]
+                    chosen_event = choices([e for e in Events if e != Events.UNKNOWN], weights=[60,50,30,5], k=1)[0]
                     print(f'В комнате за слоем тумана, оказывается {chosen_event.value}')
                     if chosen_event == Events.MONSTER:
                         fight(hero,chance(monsters_list))
