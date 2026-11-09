@@ -1,6 +1,8 @@
 from contextlib import nullcontext
+from pickle import FALSE
+
 import pytest
-from Character import Hero, INVENTORY_LIMIT, InventoryFullError, NotEnoughGold
+from Character import Hero, INVENTORY_LIMIT, InventoryFullError, NotEnoughGold, ItemNotFoundError
 from Items import Hammer, Sword, HealPotion, Bow
 from Rooms import buy_item
 from Saves import save,load_hero
@@ -138,3 +140,18 @@ class TestShop:
         assert len(hero.inventory) == inventory_size
 
 
+    @pytest.mark.parametrize(
+        "have_item_flag,item,gold_after,expectation",[
+            (True,Sword,175,nullcontext()),
+            (False,Sword,0,pytest.raises(ItemNotFoundError))
+        ],
+        ids=["success","item not found"]
+    )
+    def test_sell_item(self,hero,have_item_flag,item,gold_after,expectation):
+        item = item()
+        if have_item_flag:
+            hero.inventory.append(item)
+        with expectation:
+            hero.sell_item(item)
+        assert hero.gold == gold_after
+        assert item not in hero.inventory
