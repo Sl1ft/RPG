@@ -1,9 +1,10 @@
 from contextlib import nullcontext
-
 import pytest
 from Character import Hero, INVENTORY_LIMIT, InventoryFullError, NotEnoughGold
 from Items import Hammer, Sword, HealPotion, Bow
+from Rooms import buy_item
 from Saves import save,load_hero
+from Shop import OutOfStockError, Shop
 
 
 @pytest.fixture
@@ -113,3 +114,27 @@ class TestGold:
         with expectation:
             hero.spend_gold(cost)
         assert hero.gold == result
+
+class TestShop:
+    @pytest.mark.parametrize(
+        "inventory_flag,gold,item,item_count,gold_after,expectation,item_count_after,inventory_size",[
+            (False,500,Sword,1,250,nullcontext(),0,1),
+            (False,500,Sword,0,500,pytest.raises(OutOfStockError),0,0),
+            (False,100,Sword,1,100,pytest.raises(NotEnoughGold),1,0),
+            (True,500,Sword,1,500,pytest.raises(InventoryFullError),1,INVENTORY_LIMIT)
+        ],
+        ids=["Success_buy","OutOfStock","NotEnoughGold","FullInventory"]
+    )
+    def test_buy_item(self,hero,inventory_flag,gold,item,item_count,gold_after,expectation,item_count_after,inventory_size):
+        shop = Shop({item: item_count})
+        if inventory_flag:
+            for _ in range(INVENTORY_LIMIT):
+                hero.input_item(Sword)
+        hero.gold = gold
+        with expectation:
+            buy_item(hero,shop,item)
+        assert hero.gold == gold_after
+        assert shop.shop_dict[item] == item_count_after
+        assert len(hero.inventory) == inventory_size
+
+
