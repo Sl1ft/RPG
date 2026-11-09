@@ -146,6 +146,7 @@ def room(hero: 'Hero', monsters_list: list,items_list:list):
                     elif chosen_event == Events.SHOP:
                         print(f'Вас встречает мужчина, который представился торговцем')
                         open_shop(hero)
+                        break
             else:
                 print('Введите вариант из списка')
         except(ValueError,IndexError):
