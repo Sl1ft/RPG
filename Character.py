@@ -4,6 +4,10 @@ from random import randint,choice
 from Items import Item,HealPotion,Bow,Sword,Hammer
 INVENTORY_LIMIT = 10
 
+class ItemNotFoundError(Exception):
+    pass
+class NotEnoughGold(Exception):
+    pass
 class InventoryFullError(Exception):
     pass
 
@@ -73,6 +77,12 @@ class Hero(Character):
         self.gold += gold
         print(f'+{gold} 🪙')
 
+    def spend_gold(self,cost:int) -> None:
+        if self.gold >= cost:
+            self.gold -= cost
+        else:
+            raise NotEnoughGold('У вас недостаточно золота')
+
     def statistic(self) -> None:
         print(f'Вы {self.name}, Ваше текущее здоровье: {self.hp} из {self.max_hp}')
         print(f'Ваш текущий уровень: {self.level} (Опыта до следущего уровня: {self.exp_to_next_lvl- self.exp})')
@@ -139,6 +149,35 @@ class Hero(Character):
 
         else:
             print(f'Данного предмета нет в вашем инвентаре')
+
+    def sell_menu(self) -> Item | None:
+        if self.inventory:
+            while True:
+                print('Что вы хотите продать?')
+                for num,value in enumerate(self.inventory,start= 1):
+                    print(f'{num}: {value} | {value.sell_price} 🪙')
+                print('0: Выйти')
+
+                try:
+                    b = int(input())
+                except ValueError:
+                    print('❌Введите число\n')
+                    continue
+                if 0 <= b <= len(self.inventory):
+                    if b == 0:
+                        return None
+                    return self.inventory[b - 1]
+                else:
+                    print('❌Введите номер предмета из списка')
+        else:
+            print('Ваш инвентарь пуст')
+
+    def sell_item(self,item: Item):
+        if item in self.inventory:
+            self.inventory.remove(item)
+            self.gain_gold(item.sell_price)
+        else:
+            raise ItemNotFoundError('Данного предмета нету в инвентаре')
 
     def use(self):
         if self.inventory:
